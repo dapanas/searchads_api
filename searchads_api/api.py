@@ -1454,6 +1454,40 @@ class SearchAdsAPI:
                               offset=offset,
                               limit=limit)
 
+    def get_ads_report_by_date(self,
+                               campaign_id,
+                               start_date,
+                               end_date,
+                               sort_field="date",
+                               sort_order="ASCENDING",
+                               conditions=None,
+                               return_records_with_no_metrics=True,
+                               return_row_totals=True,
+                               return_grand_totals=True,
+                               granularity=None,
+                               group_by=None,
+                               offset=0,
+                               limit=1000):
+        """
+        Get reports on ads within a specific campaign.
+        """
+        if not conditions:
+            conditions = []
+        return self._get_data(data_type="ads",
+                              campaignId=campaign_id,
+                              start_date=start_date,
+                              end_date=end_date,
+                              sort_field=sort_field,
+                              sort_order=sort_order,
+                              conditions=conditions,
+                              no_metrics=return_records_with_no_metrics,
+                              return_row_totals=return_row_totals,
+                              return_grand_totals=return_grand_totals,
+                              granularity=granularity,
+                              group_by=group_by,
+                              offset=offset,
+                              limit=limit)
+
     def _get_data(self,
                   data_type,
                   start_date,
@@ -1479,10 +1513,11 @@ class SearchAdsAPI:
             li = 1000
         else:
             li = limit
-        if granularity is not None:
-            if return_grand_totals == True or return_row_totals == True:
-                print("return_grand_totals and return_row_totals must be False")
-                return None
+
+        if granularity is not None and (return_grand_totals == True or return_row_totals == True):
+            print("return_grand_totals and return_row_totals must be False if granularity is specified")
+            return None
+
         while True:
             data = {
                 "startTime": start_date,
@@ -1505,51 +1540,55 @@ class SearchAdsAPI:
                 "returnRowTotals": return_row_totals,
                 "returnGrandTotals": return_grand_totals
             }
+
             if granularity is not None:
                 data["granularity"] = granularity
+
             if group_by is not None:
                 data["groupBy"] = [
                     group_by
                 ]
+
             if data_type == "campaigns":
-                res = self.api_call("reports/campaigns",
-                                    json_data=data, method="POST")
+                res = self.api_call("reports/campaigns", json_data=data, method="POST")
             elif data_type == "adgroups":
-                res = self.api_call(
-                    "reports/campaigns/{}/adgroups".format(campaignId),
-                    json_data=data, method="POST")
+                res = self.api_call(f"reports/campaigns/{campaignId}/adgroups", json_data=data, method="POST")
             elif data_type == "creativesets":
-                res = self.api_call(
-                    "reports/campaigns/{}/creativesets".format(campaignId),
-                    json_data=data, method="POST")
+                res = self.api_call(f"reports/campaigns/{campaignId}/creativesets", json_data=data, method="POST")
             elif data_type == "keywords":
-                res = self.api_call(
-                    "reports/campaigns/{}/keywords".format(campaignId),
-                    json_data=data, method="POST")
+                res = self.api_call(f"reports/campaigns/{campaignId}/keywords", json_data=data, method="POST")
             elif data_type == "searchterms":
-                res = self.api_call(
-                    "reports/campaigns/{}/searchterms".format(campaignId),
-                    json_data=data, method="POST")
+                res = self.api_call(f"reports/campaigns/{campaignId}/searchterms", json_data=data, method="POST")
+            elif data_type == "ads":
+                res = self.api_call(f"reports/campaigns/{campaignId}/ads", json_data=data, method="POST")
             else:
+                res = None
                 print("Unknown data type", data_type)
+
             if res is None:
                 return None
+
             if res["data"] is None:
                 return None
+
             if res["data"]["reportingDataResponse"] is None:
                 return None
+
             row.extend(res["data"]["reportingDataResponse"]["row"])
+
             if return_grand_totals:
                 grandTotals.extend(
                     res["data"]["reportingDataResponse"]["grandTotals"])
-            res_len = len(row)
 
+            res_len = len(row)
             offset = len(row)
-            # print(limit)
+
             if res_len == limit or res_len >= res["pagination"]["totalResults"]:
                 break
+
         if return_grand_totals:
             return row, grandTotals
+
         return row
 
     # Geosearch Methods
