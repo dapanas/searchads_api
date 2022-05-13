@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
     name='apple_searchads_api',
     description='Apple SearchAds API non-official python library',
-    version='1.6.1',
+    version='1.6.2',
     url='https://github.com/dapanas/searchads_api',
     author='Abdul Majeed Alkattan',
     author_email='alkattan@phiture.com',
