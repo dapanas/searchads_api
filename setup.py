@@ -2,15 +2,15 @@ from setuptools import setup
 import setuptools
 
 setup(
-    name='searchads_api',
-    description='Apple Searchads API non-official python library',
-    version='1.5.1',
-    url='https://github.com/phiture/searchads_api',
+    name='apple_searchads_api',
+    description='Apple SearchAds API non-official python library',
+    version='1.6.0',
+    url='https://github.com/dapanas/searchads_api',
     author='Abdul Majeed Alkattan',
     author_email='alkattan@phiture.com',
     packages=["searchads_api"], 
     keywords=['python','searchads','library'],
-    install_requires=['requests>=2.22.0', 'PyJWT==2.1.0', 'cryptography==3.4.4'],
+    install_requires=['requests>=2.27.1', 'PyJWT==2.4.0', 'cryptography==3.4.8'],
     long_description="""
 
 # About Phiture
