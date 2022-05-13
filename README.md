@@ -3,6 +3,7 @@
 This is an updated version of the Phiture's searchads_api client.
 New features include:
 - Update cryptography library to compile on M1 machines.
+- Add support for get Ads reports by date
 
 ### Installation
 
@@ -19,21 +20,35 @@ _[Phiture](http://phiture.com) is a Berlin-based mobile growth consultancy worki
 In order to facilitate the usage of the Apple Search Ads API Phiture's Engineers have built a library in Python which allows users to manage campaigns, ad groups, keywords and creative sets. This library only requires intermediate Python skills and therefore makes it possible not only for Engineers but also for Data Analysts and Apple Search Ads Consultants to work with it.  While the library is extensive it is not complete and users are encouraged to commit suggestions.
 The official link to the searchads campaign management api is https://developer.apple.com/documentation/search_ads/
 
-## Setup
+## Setup for V3 of the API
 
-create a certs directory inside of your project folder, or create a different certs directory and specify it using the certificates_dir_path argument.
+Create a `certs` directory inside your project folder, or create a different certs directory and specify it using the
+`certificates_dir_path` argument.
 
-         api = SearchAdsAPI(123456, "cert.pem", "cert.key", certificates_dir_path="certs/",verbose=False)
+```python
+from searchads_api import SearchAdsAPI
 
+api = SearchAdsAPI(org_id=123456, pem="cert.pem", key="cert.key", certificates_dir_path="certs/", verbose=False)
+```
 
-## Setup for v4 of the library
+## Setup for v4 of the API
 
-create a certs directory inside of your project folder, or create a different certs directory and specify it using the certificates_dir_path argument.
+Create a `certs` directory inside your project folder, or create a different certs directory and specify it using the
+`certificates_dir_path` argument.
 
-         api = SearchAdsAPI(2134535, "public.pem","private.key", 
-         client_id="SEARCHADS.07875add-f6cd-4111-9c38-b84501d557c8",
-         team_id="SEARCHADS.07879add-d6cd-4111-9c38-b84501d527c8",
-         key_id="78a167b1-e423-4ab4-bcd1-8be75a4d7b7e", verbose=True)
+```python
+from searchads_api import SearchAdsAPI
+
+api = SearchAdsAPI(
+  org_id=123456,
+  pem="",  # Only needed for v3 of the API
+  key="private.key",
+  client_id="SEARCHADS.07875add-f6cd-4111-9c38-b84501d557c8",
+  team_id="SEARCHADS.07879add-d6cd-4111-9c38-b84501d527c8",
+  key_id="78a167b1-e423-4ab4-bcd1-8be75a4d7b7e",
+  verbose=True
+)
+```
 
 ## Available Methods
 
@@ -318,6 +333,25 @@ create a certs directory inside of your project folder, or create a different ce
 - Get reports on searchterms level
 
          row, grandTotals = api.get_searcherms_report_by_date(123456789,"2019-05-01", "2019-05-07",limit=0)
+
+- Get reports on ads level with grand totals (without granularity):
+```python
+row, grandTotals = api.get_ads_report_by_date(123456789, "2019-05-01", "2019-05-07", limit=0)
+```
+
+- Get reports on ads level with granularity set to `DAILY`:
+```python
+rows = api.get_ads_report_by_date(
+  123456789,
+  "2019-05-01",
+  "2019-05-07",
+  return_row_totals=False,
+  return_grand_totals=False,
+  granularity="DAILY",
+  limit=0
+)
+```
+
 
 ### Geo Search
 
