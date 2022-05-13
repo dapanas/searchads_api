@@ -1,5 +1,9 @@
 ![Phiture](logo.png)
 
+This is an updated version of the Phiture's searchads_api client.
+New features include:
+- Update cryptography library to compile on M1 machines.
+
 ### About Phiture
 
 _[Phiture](http://phiture.com) is a Berlin-based mobile growth consultancy working with the teams behind leading apps. Using the company’s industry-acclaimed Mobile Growth Stack as a strategic framework, Phiture team offers 4 key services: App Store Optimization, Apple Search Ads, User Retention services and Growth Consulting._
